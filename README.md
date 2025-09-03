@@ -6,6 +6,7 @@ It provides essential e-commerce features like product listing, filtering, cart,
 🚀 Features
 
 User Authentication
+
 Login & logout system (local storage based).
 
 Product Management
