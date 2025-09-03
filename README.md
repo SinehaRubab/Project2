@@ -1,4 +1,5 @@
 🛒 Perform Store
+
 Perform Store is a simple frontend e-commerce web application built using HTML, Tailwind CSS, and JavaScript.
 It provides essential e-commerce features like product listing, filtering, cart, wishlist, and user login with local storage.
 
