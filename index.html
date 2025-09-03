@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perform Store - E-Commerce Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .wishlist-btn.active i {
+            color: red;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- User Login Bar -->
+    <div id="user-bar" class="bg-gray-200 py-2 px-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div id="welcome-msg" class="hidden">Welcome, <span id="username-display"></span>!</div>
+            <div id="login-prompt">
+                <input type="text" id="username-input" placeholder="Enter username to login" class="px-2 py-1 border rounded-md">
+                <button id="login-btn" class="bg-indigo-600 text-white px-4 py-1 rounded-md hover:bg-indigo-700">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-2xl font-bold text-indigo-600">Perform Store</h1>
+                <nav class="hidden md:flex space-x-8">
+                    <button id="nav-home" class="text-gray-700 hover:text-indigo-600">Home</button>
+                    <button id="nav-products" class="text-gray-700 hover:text-indigo-600">Products</button>
+                    <button id="nav-about" class="text-gray-700 hover:text-indigo-600">About</button>
+                    <button id="nav-contact" class="text-gray-700 hover:text-indigo-600">Contact</button>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <button id="nav-wishlist" class="relative">
+                        <i class="fas fa-heart text-xl text-gray-700 hover:text-red-500"></i>
+                        <span id="wishlist-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button id="nav-cart" class="relative">
+                        <i class="fas fa-shopping-cart text-xl text-gray-700 hover:text-indigo-600"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button id="mobile-menu" class="md:hidden text-gray-700">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu-content" class="hidden md:hidden pb-4">
+                <button id="nav-home-mobile" class="block text-gray-700 hover:text-indigo-600 py-2">Home</button>
+                <button id="nav-products-mobile" class="block text-gray-700 hover:text-indigo-600 py-2">Products</button>
+                <button id="nav-about-mobile" class="block text-gray-700 hover:text-indigo-600 py-2">About</button>
+                <button id="nav-contact-mobile" class="block text-gray-700 hover:text-indigo-600 py-2">Contact</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero-bg text-white py-20 rounded-lg mb-12">
+                <div class="max-w-7xl mx-auto text-center px-4">
+                    <h2 class="text-4xl md:text-6xl font-bold mb-4">Welcome to Perform Store</h2>
+                    <p class="text-lg md:text-xl mb-8">Discover premium products crafted for performance and style.</p>
+                    <button id="shop-now" class="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100">Shop Now</button>
+                </div>
+                <div class="mt-12">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/22f62d13-e07c-441e-a5d8-c3b5cc67892e.png" alt="Vibrant e-commerce hero banner showing a sleek modern storefront with colorful products, shopping bags, and happy customers browsing in a contemporary retail environment during daytime with bright natural lighting and clean architectural lines" class="w-full h-40 md:h-60 object-cover rounded-b-lg" />
+                </div>
+            </div>
+            
+            <!-- Featured Products -->
+            <h3 class="text-3xl font-semibold text-center mb-8 text-gray-800">Featured Products</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="featured-products">
+                <!-- Featured products will be populated by JS -->
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="section">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">All Products</h2>
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <select id="category-filter" class="px-4 py-2 border rounded-lg">
+                    <option value="">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Home">Home</option>
+                </select>
+                <input type="text" id="search-input" placeholder="Search products..." class="px-4 py-2 border rounded-lg flex-grow">
+                <button id="search-btn" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700">Search</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid">
+                <!-- Products will be populated by JS -->
+            </div>
+        </section>
+
+        <!-- Product Detail Section -->
+        <section id="product-detail" class="section">
+            <button id="back-to-products" class="mb-4 text-indigo-600 hover:underline"><i class="fas fa-arrow-left mr-2"></i>Back to Products</button>
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <div class="md:flex">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <div id="product-image" class="rounded-lg overflow-hidden"></div>
+                        <div class="flex mt-4">
+                            <button id="add-to-wishlist-detail" class="wishlist-btn bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg mr-2"><i class="far fa-heart"></i> Add to Wishlist</button>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 md:pl-8">
+                        <h3 id="product-title" class="text-3xl font-bold mb-4"></h3>
+                        <div id="product-stars" class="mb-4"></div>
+                        <p id="product-price" class="text-2xl font-semibold text-indigo-600 mb-4"></p>
+                        <p id="product-description" class="text-gray-700 mb-6"></p>
+                        <div class="mb-4">
+                            <label>Quantity:</label>
+                            <input type="number" id="quantity-input" value="1" min="1" max="10" class="ml-2 px-2 py-1 border rounded w-20">
+                        </div>
+                        <button id="add-to-cart-detail" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 w-full md:w-auto">
+                            <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+                        </button>
+                        <div id="product-reviews" class="mt-6">
+                            <h4 class="font-semibold mb-2">Customer Reviews</h4>
+                            <div id="reviews-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cart Section -->
+        <section id="cart" class="section">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">Your Cart</h2>
+            <div id="cart-items" class="space-y-4 mb-6">
+                <!-- Cart items will be populated by JS -->
+            </div>
+            <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                <h3 id="cart-total" class="text-2xl font-bold text-indigo-600">Total: $0</h3>
+            </div>
+            <button id="checkout-btn" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700">Proceed to Checkout</button>
+        </section>
+
+        <!-- Wishlist Section -->
+        <section id="wishlist" class="section">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">Your Wishlist</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="wishlist-grid">
+                <!-- Wishlist items will be populated by JS -->
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">About Perform Store</h2>
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <div class="md:flex">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a09c190f-692c-462f-b699-71c410b8661d.png" alt="Modern brick and glass store exterior with stylish mannequins in window displays and clean metal signage saying Perform Store in an urban street setting during evening with soft lighting and contemporary architecture" class="rounded-lg" />
+                    </div>
+                    <div class="md:w-1/2 md:pl-8">
+                        <p class="text-gray-700 mb-6">
+                            At Perform Store, we believe in delivering exceptional products that enhance your lifestyle. Founded with a passion for quality and innovation, our store offers a curated selection of electronics, clothing, and home essentials designed to perform at the highest level.
+                        </p>
+                        <p class="text-gray-700 mb-6">
+                            Our commitment to customer satisfaction drives everything we do. From careful product selection to seamless shopping experiences, we strive to exceed expectations.
+                        </p>
+                        <ul class="space-y-2">
+                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Premium quality products</li>
+                            <li><i class="fas fa-shipping-fast text-blue-500 mr-2"></i>Fast and reliable shipping</li>
+                            <li><i class="fas fa-headset text-purple-500 mr-2"></i>24/7 customer support</li>
+                            <li><i class="fas fa-undo-alt text-orange-500 mr-2"></i>Easy returns and exchanges</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">Contact Us</h2>
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <div class="md:flex">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <h3 class="text-xl font-semibold mb-4">Get in Touch</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt text-indigo-600 mr-4"></i>
+                                <span>123 Fashion Avenue, New York, NY 10001</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-phone text-indigo-600 mr-4"></i>
+                                <span>+1 (555) 123-4567</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope text-indigo-600 mr-4"></i>
+                                <span>contact@performstore.com</span>
+                            </div>
+                        </div>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/beb341d5-2926-416a-9e2b-b6d15be938e1.png" alt="Interactive contact information display with modern office interior showing desks, computers, and a receptionist area with geometric patterns and warm lighting in contemporary design with sleek office chairs and large windows" class="mt-6 rounded-lg" />
+                    </div>
+                    <div class="md:w-1/2 md:pl-8">
+                        <form id="contact-form" class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                <textarea id="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                            </div>
+                            <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 w-full">
+                                <i class="fas fa-paper-plane mr-2"></i>Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex justify-between">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold mb-4">Perform Store</h3>
+                    <p class="text-gray-400">Your destination for quality products.</p>
+                </div>
+                <div class="mb-6 md:mb-0">
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400">© 2024 Perform Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Expanded Dummy data for products with more clothing and electronics
+        const products = [
+            { id: 1, name: "Wireless Headphones", price: 99.99, category: "Electronics", stars: 4, description: "High-quality wireless headphones with noise cancellation.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2a72a1bd-b355-4844-ab9e-f516d08c296b.png", reviews: ["Great sound!", "Comfortable for long hours."] },
+            { id: 2, name: "Smart Watch", price: 199.99, category: "Electronics", stars: 5, description: "Feature-packed smartwatch with health tracking.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/88846741-ed2b-4d7b-847d-cf7bcd754540.png", reviews: ["Amazing features!", "Looks premium."] },
+            { id: 3, name: "Smartphone - Galaxy S24", price: 799.99, category: "Electronics", stars: 5, description: "Latest smartphone with high-res camera and fast processor.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ba629447-c503-457a-b08d-6745eb70a616.png", reviews: ["Camera is incredible!", "Fast and smooth."] },
+            { id: 4, name: "Laptop - Pro Model", price: 1299.99, category: "Electronics", stars: 4, description: "Powerful laptop for work and gaming.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f0b87809-0c83-4080-94c9-d5b9a474ca6a.png", reviews: ["Great performance!", "Battery lasts long."] },
+            { id: 5, name: "Tablet - iPad Pro", price: 999.99, category: "Electronics", stars: 5, description: "Versatile tablet for creativity and productivity.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/62946932-6a88-40a3-bc0b-5af864b737a4.png", reviews: ["Perfect for drawing!", "Display is stunning."] },
+            { id: 6, name: "Bluetooth Speaker", price: 59.99, category: "Electronics", stars: 5, description: "Portable Bluetooth speaker with amazing sound.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/3dbb8b19-b59e-4ef5-b493-703f9d0a626c.png", reviews: ["Loud and clear!", "Water resistant too."] },
+            { id: 7, name: "Running Shoes", price: 79.99, category: "Clothing", stars: 4, description: "Comfortable running shoes for all terrains.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/5553284d-bd52-4370-bdb1-5067fa85eff0.png", reviews: ["Very supportive!", "Great grip."] },
+            { id: 8, name: "T-Shirt - Cotton Blend", price: 24.99, category: "Clothing", stars: 4, description: "Soft cotton blend t-shirt, perfect for everyday wear.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2cc99b3f-7e51-4e9c-aa6b-ec75d6df1ac5.png", reviews: ["Comfortable fit!", "Good quality fabric."] },
+            { id: 9, name: "Jeans - Slim Fit", price: 59.99, category: "Clothing", stars: 5, description: "Stylish slim fit jeans with stretch fabric.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b8459c00-5b58-4f30-8f5e-6a1991e3c2c2.png", reviews: ["Fits great!", "Durable material."] },
+            { id: 10, name: "Dress - Summer Collection", price: 89.99, category: "Clothing", stars: 4, description: "Light and airy summer dress for casual outings.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/71da8011-9944-470c-b745-b6c2afbb5246.png", reviews: ["Flowy and pretty!", "Breathable fabric."] },
+            { id: 11, name: "Jacket - Denim", price: 79.99, category: "Clothing", stars: 4, description: "Classic denim jacket for a timeless look.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e02f19a1-b216-4c25-806a-fcf0fe96be61.png", reviews: ["Stylish!", "Goes with everything."] },
+            { id: 12, name: "Yoga Mat", price: 29.99, category: "Clothing", stars: 4, description: "Non-slip yoga mat for your practice.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/230d6454-905b-46b4-922f-ed773b4aef24.png", reviews: ["Grippy surface!", "Comfy to use."] },
+            { id: 13, name: "Coffee Maker", price: 149.99, category: "Home", stars: 4, description: "Premium coffee maker for the perfect brew.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ec708fcc-4719-464d-a23f-f25911cc4e7f.png", reviews: ["Easy to use!", "Drinks taste great."] },
+            { id: 14, name: "LED Desk Lamp", price: 39.99, category: "Home", stars: 3, description: "Adjustable LED lamp for your workspace.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/df382103-9a2b-4d70-ba91-b6dd95509397.png", reviews: ["Bright light!", "Adjustable height."] },
+            { id: 15, name: "Cookware Set", price: 89.99, category: "Home", stars: 5, description: "Essential cookware set for modern kitchens.", image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/31b52ea6-96e0-4e8a-aaf5-29a30457be8c.png", reviews: ["Non-stick!", "Heats evenly."] },
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+        let currentProduct = null;
+        let currentUser = localStorage.getItem('user') || null;
+
+        // Update UI based on login
+        function updateLoginStatus() {
+            if (currentUser) {
+                document.getElementById('login-prompt').classList.add('hidden');
+                document.getElementById('welcome-msg').classList.remove('hidden');
+                document.getElementById('username-display').textContent = currentUser;
+            } else {
+                document.getElementById('login-prompt').classList.remove('hidden');
+                document.getElementById('welcome-msg').classList.add('hidden');
+            }
+        }
+
+        // Simple Login
+        document.getElementById('login-btn').addEventListener('click', () => {
+            const username = document.getElementById('username-input').value.trim();
+            if (username) {
+                currentUser = username;
+                localStorage.setItem('user', currentUser);
+                updateLoginStatus();
+                alert(`Welcome, ${username}!`);
+            } else {
+                alert('Please enter a username.');
+            }
+        });
+
+        // DOM Elements
+        const sections = document.querySelectorAll('.section');
+        const homeSection = document.getElementById('home');
+        const productsSection = document.getElementById('products');
+        const productDetailSection = document.getElementById('product-detail');
+        const cartSection = document.getElementById('cart');
+        const wishlistSection = document.getElementById('wishlist');
+        const aboutSection = document.getElementById('about');
+        const contactSection = document.getElementById('contact');
+
+        // Navigation
+        function showSection(sectionId) {
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            if (sectionId === 'products') loadProducts();
+            if (sectionId === 'cart') loadCart();
+            if (sectionId === 'wishlist') loadWishlist();
+            window.scrollTo(0, 0);
+        }
+
+        document.getElementById('nav-home').addEventListener('click', () => showSection('home'));
+        document.getElementById('nav-products').addEventListener('click', () => showSection('products'));
+        document.getElementById('nav-about').addEventListener('click', () => showSection('about'));
+        document.getElementById('nav-contact').addEventListener('click', () => showSection('contact'));
+        document.getElementById('nav-cart').addEventListener('click', () => showSection('cart'));
+        document.getElementById('nav-wishlist').addEventListener('click', () => showSection('wishlist'));
+
+        // Mobile Menu
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuContent = document.getElementById('mobile-menu-content');
+        mobileMenu.addEventListener('click', () => {
+            mobileMenuContent.classList.toggle('hidden');
+        });
+
+        document.getElementById('nav-home-mobile').addEventListener('click', () => { showSection('home'); mobileMenuContent.classList.add('hidden'); });
+        document.getElementById('nav-products-mobile').addEventListener('click', () => { showSection('products'); mobileMenuContent.classList.add('hidden'); });
+        document.getElementById('nav-about-mobile').addEventListener('click', () => { showSection('about'); mobileMenuContent.classList.add('hidden'); });
+        document.getElementById('nav-contact-mobile').addEventListener('click', () => { showSection('contact'); mobileMenuContent.classList.add('hidden'); });
+
+        // Shop Now button
+        document.getElementById('shop-now').addEventListener('click', () => showSection('products'));
+
+        // Utility functions
+        function renderStars(stars) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                html += `<i class="fas fa-star ${i <= stars ? 'text-yellow-400' : 'text-gray-300'}"></i>`;
+            }
+            return html;
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = count;
+        }
+
+        function updateWishlistCount() {
+            document.getElementById('wishlist-count').textContent = wishlist.length;
+        }
+
+        // Load Featured Products
+        function loadFeaturedProducts() {
+            const featured = products.slice(0, 6); // Show more featured
+            const container = document.getElementById('featured-products');
+            container.innerHTML = featured.map(product => `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden product-card">
+                    <img src="${product.image}" alt="Professional product image of ${product.name.toLowerCase()} showing a sleek design with high-quality resolution and realistic lighting in a minimalist setting" class="w-full h-48 object-cover" />
+                    <div class="p-4">
+                        <h4 class="text-lg font-semibold mb-2">${product.name}</h4>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">${renderStars(product.stars)}</div>
+                            <button onclick="toggleWishlist(${product.id})" class="wishlist-btn"><i class="far fa-heart"></i></button>
+                        </div>
+                        <p class="text-xl font-bold text-indigo-600">$${product.price}</p>
+                        <button onclick="selectProduct(${product.id})" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 w-full">View Details</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load All Products with filtering
+        function loadProducts() {
+            const categoryFilter = document.getElementById('category-filter').value;
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            const filtered = products.filter(product => {
+                if (categoryFilter && product.category !== categoryFilter) return false;
+                if (searchTerm && !product.name.toLowerCase().includes(searchTerm)) return false;
+                return true;
+            });
+            const container = document.getElementById('products-grid');
+            container.innerHTML = filtered.map(product => `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden product-card">
+                    <img src="${product.image}" alt="Detailed product showcase of ${product.name.toLowerCase()} featuring close-up views with professional photography, neutral background, and highlighting key features in a clean commercial style" class="w-full h-48 object-cover" />
+                    <div class="p-4">
+                        <h4 class="text-lg font-semibold mb-2">${product.name}</h4>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">${renderStars(product.stars)}</div>
+                            <button onclick="toggleWishlist(${product.id})" class="wishlist-btn"><i class="far fa-heart"></i></button>
+                        </div>
+                        <p class="text-xl font-bold text-indigo-600">$${product.price}</p>
+                        <button onclick="selectProduct(${product.id})" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 w-full">View Details</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select Product for Detail View
+        window.selectProduct = function(productId) {
+            currentProduct = products.find(p => p.id === productId);
+            if (currentProduct) {
+                document.getElementById('product-title').textContent = currentProduct.name;
+                document.getElementById('product-price').textContent = `$${currentProduct.price}`;
+                document.getElementById('product-description').textContent = currentProduct.description;
+                document.getElementById('product-stars').innerHTML = renderStars(currentProduct.stars);
+                document.getElementById('product-image').innerHTML = `
+                    <img src="${currentProduct.image}" alt="Detailed close-up product image of ${currentProduct.name.toLowerCase()} displaying intricate details, quality materials, and design elements with studio lighting and professional composition" class="w-full h-96 object-cover rounded-lg" />
+                `;
+                const reviewsList = document.getElementById('reviews-list');
+                reviewsList.innerHTML = currentProduct.reviews.map(review => `<p class="text-sm text-gray-600 mb-1"><i class="fas fa-quote-left mr-1"></i>${review}</p>`).join('');
+                const wishlistBtn = document.getElementById('add-to-wishlist-detail');
+                wishlistBtn.classList.toggle('active', wishlist.some(item => item.id === currentProduct.id));
+                wishlistBtn.querySelector('i').className = wishlist.some(item => item.id === currentProduct.id) ? 'fas fa-heart' : 'far fa-heart';
+                showSection('product-detail');
+            }
+        };
+
+        // Add/Remove to/from Wishlist
+        window.toggleWishlist = function(productId) {
+            const product = products.find(p => p.id === productId);
+            const existing = wishlist.find(item => item.id === productId);
+            if (existing) {
+                wishlist = wishlist.filter(item => item.id !== productId);
+            } else {
+                wishlist.push(product);
+            }
+            updateWishlistCount();
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            const btns = document.querySelectorAll(`button[onclick="toggleWishlist(${productId})"]`);
+            btns.forEach(btn => {
+                btn.classList.toggle('active', !existing);
+                btn.querySelector('i').className = existing ? 'far fa-heart' : 'fas fa-heart';
+            });
+            if (location.href.includes('product-detail')) {
+                document.getElementById('add-to-wishlist-detail').classList.toggle('active', !existing);
+                document.getElementById('add-to-wishlist-detail').querySelector('i').className = existing ? 'far fa-heart' : 'fas fa-heart';
+            }
+        };
+
+        document.getElementById('add-to-wishlist-detail').addEventListener('click', () => {
+            if (currentProduct) toggleWishlist(currentProduct.id);
+        });
+
+        // Add to Cart from Detail
+        document.getElementById('add-to-cart-detail').addEventListener('click', () => {
+            if (currentProduct) {
+                const quantity = parseInt(document.getElementById('quantity-input').value) || 1;
+                const existingItem = cart.find(item => item.id === currentProduct.id);
+                if (existingItem) {
+const newQty = existingItem.quantity + quantity;
+                    existingItem.quantity = Math.min(newQty, 10); // Max 10 
+                } else {
+                    cart.push({ ...currentProduct, quantity: Math.min(quantity, 10) });
+                }
+                updateCartCount();
+                localStorage.setItem('cart', JSON.stringify(cart));
+                alert(`${currentProduct.name} added to cart!`);
+            }
+        });
+
+        // Back to Products
+        document.getElementById('back-to-products').addEventListener('click', () => showSection('products'));
+
+        // Load Cart with quantity controls
+        function loadCart() {
+            const container = document.getElementById('cart-items');
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-gray-600 text-center">Your cart is empty.</p>';
+            } else {
+                container.innerHTML = cart.map(item => `
+                    <div class="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <img src="${item.image}" alt="Cart item preview of ${item.name.toLowerCase()} shown at smaller scale in thumbnail view with clean edges" class="w-16 h-16 object-cover rounded mr-4" />
+                            <div>
+                                <h4 class="font-semibold">${item.name}</h4>
+                                <p class="text-gray-600">$${item.price}</p>
+                                <div class="flex items-center mt-2">
+                                    <button onclick="updateQuantity(${item.id}, -1)" class="px-2 py-1 bg-gray-200 rounded">-</button>
+                                    <span class="px-3">${item.quantity}</span>
+                                    <button onclick="updateQuantity(${item.id}, 1)" class="px-2 py-1 bg-gray-200 rounded">+</button>
+                                </div>
+                            </div>
+                        </div>
+<div class="flex items-center">
+                            <span class="text-xl font-bold mr-4">$${(item.price * item.quantity).toFixed(2)}</span>
+                            <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            document.getElementById('cart-total').textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        // Update quantity in cart
+        window.updateQuantity = function(productId, change) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                const newQty = item.quantity + change;
+                if (newQty > 0 && newQty <= 10) {
+                    item.quantity = newQty;
+                    updateCartCount();
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    loadCart();
+                }
+            }
+        };
+
+        // Remove from Cart
+        window.removeFromCart = function(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartCount();
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        };
+
+        // Simple Checkout
+document.getElementById('checkout-btn').addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+            } else {
+                alert(`Checkout successful! Total: $${cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}`);
+                cart = [];
+                updateCartCount();
+                localStorage.setItem('cart', JSON.stringify(cart));
+                loadCart();
+                showSection('home');
+            }
+        });
+
+        // Load Wishlist
+        function loadWishlist() {
+            const container = document.getElementById('wishlist-grid');
+            if (wishlist.length === 0) {
+                container.innerHTML = '<p class="text-gray-600 text-center">Your wishlist is empty.</p>';
+            } else {
+                container.innerHTML = wishlist.map(product => `
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden product-card">
+                        <img src="${product.image}" alt="Wishlist item image of ${product.name.toLowerCase()} displayed clearly in a featured view with appealing aesthetics" class="w-full h-48 object-cover" />
+                        <div class="p-4">
+                            <h4 class="text-lg font-semibold mb-2">${product.name}</h4>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">${renderStars(product.stars)}</div>
+                                <button onclick="toggleWishlist(${product.id})" class="wishlist-btn active"><i class="fas fa-heart"></i></button>
+                            </div>
+                            <p class="text-xl font-bold text-indigo-600">$${product.price}</p>
+                            <button onclick="selectProduct(${product.id})" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 w-full">View Details</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Contact Form
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            e.target.reset();
+        });
+
+        // Filters and Search
+        document.getElementById('category-filter').addEventListener('change', loadProducts);
+        document.getElementById('search-btn').addEventListener('click', loadProducts);
+        document.getElementById('search-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') loadProducts();
+        });
+
+        // Initial Load
+        loadFeaturedProducts();
+        updateCartCount();
+        updateWishlistCount();
+        updateLoginStatus();
+    </script>
+</body>
+</html>
+</content>
+</create_file>
+
