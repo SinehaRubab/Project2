@@ -4,8 +4,8 @@ Perform Store is a simple frontend e-commerce web application built using HTML, 
 It provides essential e-commerce features like product listing, filtering, cart, wishlist, and user login with local storage.
 
 🚀 Features
-User Authentication
 
+User Authentication
 Login & logout system (local storage based).
 
 Product Management
